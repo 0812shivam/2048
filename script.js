@@ -274,3 +274,55 @@ function restartGame() {
     gameOverMessage.style.display = "none";
     initializeGame();
 }
+
+
+document.addEventListener("touchstart", handleTouchStart);
+document.addEventListener("touchmove", handleTouchMove);
+document.addEventListener("touchend", handleTouchEnd);
+
+let touchStartX, touchStartY, touchEndX, touchEndY;
+
+function handleTouchStart(event) {
+    touchStartX = event.touches[0].clientX;
+    touchStartY = event.touches[0].clientY;
+}
+
+function handleTouchMove(event) {
+    event.preventDefault(); // Prevent scrolling when swiping
+}
+
+function handleTouchEnd(event) {
+    touchEndX = event.changedTouches[0].clientX;
+    touchEndY = event.changedTouches[0].clientY;
+    
+    // Calculate swipe direction based on touch coordinates
+    const dx = touchEndX - touchStartX;
+    const dy = touchEndY - touchStartY;
+
+    if (Math.abs(dx) > Math.abs(dy)) {
+        // Horizontal swipe
+        if (dx > 0) {
+            moveTilesRight();
+        } else {
+            moveTilesLeft();
+        }
+    } else {
+        // Vertical swipe
+        if (dy > 0) {
+            moveTilesDown();
+        } else {
+            moveTilesUp();
+        }
+    }
+
+    if (!gameOver) {
+        if (isGameOver()) {
+            gameOver = true;
+            showGameOverMessage();
+        } else {
+            addRandomTile();
+            displayBoard();
+        }
+    }
+}
+
